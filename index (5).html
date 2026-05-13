@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hollow Launcher</title>
+  <link rel="icon" type="image/png" href="https://github.com/hollowlauncher/hollow-launcher/blob/main/20260322_213749.png?raw=true">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --border-h: rgba(255,255,255,0.18);
+      --text: #f2f2f2;
+      --muted: #555;
+      --muted2: #888;
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg-img {
+      position: fixed; inset: 0;
+      background: url('https://cdn.modrinth.com/data/lLqFfGNs/images/a7205115d731077733ab5cdcc639e5531f2dee12.jpeg') center/cover no-repeat;
+      opacity: var(--bg-op, 0.13);
+      z-index: 0;
+      transition: opacity .4s;
+      pointer-events: none;
+    }
+    .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 14px;
+}
+
+/* Animated green dot */
+.dot {
+  width: 10px;
+  height: 10px;
+  background: #00ff88;
+  border-radius: 50%;
+  position: relative;
+}
+
+/* Pulse animation */
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #00ff88;
+  animation: pulse 1.5s infinite;
+  opacity: 0.6;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+    /* ── HEADER ── */
+    header {
+      position: fixed; inset: 0 0 auto 0;
+      height: 54px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 18px;
+      background: rgba(5,5,5,0.8);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      z-index: 999;
+    }
+
+    .logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .logo img { width:26px; height:26px; border-radius:7px; }
+    .logo-name { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-0.025em; }
+
+    nav { display:flex; gap:1px; }
+    nav a {
+      font-size:13px; font-weight:500; color:var(--muted2);
+      text-decoration:none; padding:5px 9px; border-radius:7px;
+      transition:color .15s, background .15s; letter-spacing:-0.01em;
+    }
+    nav a:hover { color:var(--text); background:rgba(255,255,255,0.07); }
+
+    .hdr-r { display:flex; align-items:center; gap:2px; }
+    .vr { width:1px; height:16px; background:var(--border); margin:0 5px; }
+
+    .ibtn {
+      width:30px; height:30px; border-radius:7px;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--muted2); text-decoration:none;
+      transition:background .15s, color .15s;
+    }
+    .ibtn:hover { background:rgba(255,255,255,0.08); color:var(--text); }
+    .ibtn svg { width:15px; height:15px; fill:currentColor; }
+
+    @media (max-width:480px) { nav, .vr { display:none; } }
+
+    /* ── PAGE ── */
+    .page { position:relative; z-index:1; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:64px 24px 56px;
+    }
+
+    .pill {
+      display:inline-flex; align-items:center; gap:5px;
+      background:rgba(255,255,255,0.05); border:1px solid var(--border);
+      border-radius:99px; padding:4px 11px 4px 8px;
+      font-size:12px; font-weight:500; color:var(--muted2);
+      letter-spacing:-0.01em; margin-bottom:22px;
+      animation:fadeUp .5s ease both;
+    }
+    .pill .ms { font-size:14px; color:#34d399; }
+
+    .hero h1 {
+      font-size:clamp(40px,10vw,74px); font-weight:800;
+      letter-spacing:-0.04em; line-height:1; color:#fff;
+      animation:fadeUp .5s .08s ease both;
+    }
+
+    .hero-sub {
+      margin-top:13px; font-size:clamp(14px,3.5vw,17px); font-weight:400;
+      color:var(--muted2); letter-spacing:-0.01em; line-height:1.55;
+      animation:fadeUp .5s .16s ease both;
+    }
+
+    .hero-btns {
+      display:flex; gap:10px; margin-top:28px;
+      flex-wrap:wrap; justify-content:center;
+      animation:fadeUp .5s .24s ease both;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      position:relative;
+      display:inline-flex; align-items:center; gap:7px;
+      padding:11px 22px; border-radius:10px;
+      font-family:var(--font); font-size:14px; font-weight:600;
+      letter-spacing:-0.02em; text-decoration:none;
+      cursor:pointer; overflow:hidden;
+      transition:transform .15s, box-shadow .15s;
+      -webkit-tap-highlight-color:transparent;
+      border:none; outline:none;
+    }
+    .btn:hover { transform:translateY(-1px); }
+    .btn:active { transform:scale(0.97); }
+
+    .btn-w { background:#fff; color:#000; box-shadow:0 2px 14px rgba(255,255,255,.1); }
+    .btn-w:hover { background:#ebebeb; box-shadow:0 8px 28px rgba(255,255,255,.15); }
+
+    .btn-g {
+      background:rgba(255,255,255,0.06); color:var(--text);
+      border:1px solid var(--border);
+    }
+    .btn-g:hover { background:rgba(255,255,255,0.1); border-color:var(--border-h); }
+
+    .btn .ms { font-size:18px; }
+
+    .btn .rpl {
+      position:absolute; border-radius:50%;
+      transform:scale(0); animation:rpl-a .5s linear;
+      pointer-events:none;
+    }
+    .btn-w .rpl { background:rgba(0,0,0,.12); }
+    .btn-g .rpl { background:rgba(255,255,255,.12); }
+    @keyframes rpl-a { to { transform:scale(4); opacity:0; } }
+
+    .btn.loading { pointer-events:none; opacity:.75; }
+    .btn.done {
+      pointer-events:none;
+      background:#0d2e1a !important;
+      color:#4ade80 !important;
+      border-color:#1a4d2e !important;
+      box-shadow:none !important;
+    }
+    .btn.loading .ms { animation:dl .6s ease infinite alternate; }
+    @keyframes dl { from{transform:translateY(0)} to{transform:translateY(3px)} }
+
+    /* ── SECTION ── */
+    .section {
+      padding:80px 24px; max-width:960px;
+      margin:0 auto; scroll-margin-top:66px;
+    }
+
+    .eyebrow {
+      text-align:center; font-size:11px; font-weight:600;
+      letter-spacing:.1em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:7px;
+    }
+    .stitle {
+      text-align:center; font-size:clamp(24px,5vw,36px);
+      font-weight:800; letter-spacing:-0.03em;
+      color:var(--text); margin-bottom:34px;
+    }
+
+    /* ── FEATURES ── */
+    .feat-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+      gap:10px;
+    }
+    @media (max-width:560px) { .feat-grid { grid-template-columns:1fr 1fr; gap:8px; } }
+    @media (max-width:340px) { .feat-grid { grid-template-columns:1fr; } }
+
+    .fcard {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:18px 16px;
+      display:flex; flex-direction:column; gap:9px;
+      transition:border-color .2s, background .2s, transform .2s;
+    }
+    .fcard:hover { border-color:var(--border-h); background:rgba(255,255,255,0.06); transform:translateY(-2px); }
+    .ficon {
+      width:36px; height:36px; background:rgba(255,255,255,0.06);
+      border-radius:9px; display:flex; align-items:center; justify-content:center;
+    }
+    .ficon .ms { font-size:20px; color:var(--text); }
+    .fname { font-size:13.5px; font-weight:700; letter-spacing:-0.02em; color:var(--text); }
+    .fdesc { font-size:12px; color:var(--muted2); line-height:1.5; }
+
+    /* ── PREVIEW ── */
+    .prev-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    }
+    @media (max-width:560px) { .prev-grid { grid-template-columns:1fr; gap:10px; } }
+
+    .pcard {
+      border-radius:14px; overflow:hidden;
+      border:1px solid var(--border); background:#0a0a0a;
+      box-shadow:0 16px 48px rgba(0,0,0,.6);
+    }
+    .pcard img { width:100%; display:block; transition:transform .4s; }
+    .pcard:hover img { transform:scale(1.02); }
+    .pcap {
+      padding:10px 14px; font-size:11.5px; font-weight:500;
+      color:var(--muted); letter-spacing:-0.01em;
+      border-top:1px solid var(--border);
+    }
+
+    /* ── DOWNLOAD BOX ── */
+    .dlbox {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:18px; padding:44px 24px; text-align:center;
+    }
+    .dlbox p { font-size:15px; color:var(--muted2); letter-spacing:-0.01em; }
+    .dlver { font-size:12px; color:var(--muted); margin-top:4px; margin-bottom:24px; }
+    .dlrow { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top:1px solid var(--border); padding:24px;
+      text-align:center; font-size:12.5px; color:var(--muted);
+      letter-spacing:-0.01em; position:relative; z-index:1;
+    }
+
+    /* ── MATERIAL SYMBOLS ── */
+    .ms {
+      font-family:'Material Symbols Rounded';
+      font-weight:normal; font-style:normal; line-height:1;
+      letter-spacing:normal; text-transform:none;
+      display:inline-block; white-space:nowrap; direction:ltr;
+      -webkit-font-smoothing:antialiased;
+      font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;
+      user-select:none; vertical-align:middle;
+    }
+
+    /* ── ANIM ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .js-ready .reveal {
+      opacity:0; transform:translateY(16px);
+      transition:opacity .5s ease, transform .5s ease;
+    }
+    .js-ready .reveal.vis { opacity:1; transform:translateY(0); }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:#1e1e1e; border-radius:99px; }
+  </style>
+</head>
+<body>
+
+<div class="bg-img" id="bgImg"></div>
+
+<header>
+  <a class="logo" href="#">
+    <img src="https://github.com/hollowlauncher/hollow-launcher/blob/main/20260322_213749.png?raw=true" alt="">
+    <span class="logo-name">Hollow Launcher</span>
+  </a>
+  <div class="hdr-r">
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#preview">Preview</a>
+      <a href="#download">Download</a>
+    </nav>
+    <div class="vr"></div>
+    <a href="https://github.com/hollowlauncher/hollow-launcher" class="ibtn" target="_blank" title="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.405c1.02.005 2.045.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    </a>
+    <a href="https://discord.gg/vuzJAeCtrE" class="ibtn" target="_blank" title="Discord">
+      <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+    </a>
+    <a href="https://youtube.com/@hollow-launcher?si=R4aBxd-5ZqCgq3DA" class="ibtn" target="_blank" title="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="pill">
+  <span class="dot"></span>
+  Beta 1.2 is live
+    </div>
+    <h1>Hollow Launcher</h1>
+    <p class="hero-sub">Minimal, fast Minecraft launcher<br>for Vanilla &amp; Fabric.</p>
+    <div class="hero-btns">
+      <a href="https://github.com/hollowlauncher/hollow-launcher/releases/download/beta_1.2/HollowLauncher_1.0.0_x64-setup.exe"
+         class="btn btn-w" target="_blank">
+        <span class="ms">computer</span>
+        <span>Windows</span>
+      </a>
+      <a href="https://github.com/hollowlauncher/HyperLauncher/releases/download/Hyper_beta_1.0/hyper-launcher-full-release.1.apk"
+         class="btn btn-g" target="_blank">
+        <span class="ms">android</span>
+        <span>Download APK</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section">
+    <p class="eyebrow reveal">What's inside</p>
+    <h2 class="stitle reveal">Everything you need</h2>
+    <div class="feat-grid">
+      <div class="fcard reveal"><div class="ficon"><span class="ms">bolt</span></div><div class="fname">Ultra Fast</div><div class="fdesc">Launches in seconds with an optimised startup pipeline.</div></div>
+      <div class="fcard reveal"><div class="ficon"><span class="ms">extension</span></div><div class="fname">Fabric Support</div><div class="fdesc">Full Fabric mod loader integration, ready out of the box.</div></div>
+      <div class="fcard reveal"><div class="ficon"><span class="ms">sports_esports</span></div><div class="fname">Vanilla Ready</div><div class="fdesc">Play any vanilla Minecraft version with one tap.</div></div>
+      <div class="fcard reveal"><div class="ficon"><span class="ms">auto_awesome</span></div><div class="fname">Clean UI</div><div class="fdesc">Thoughtfully designed, clutter-free interface.</div></div>
+      <div class="fcard reveal"><div class="ficon"><span class="ms">inventory_2</span></div><div class="fname">Instances</div><div class="fdesc">Manage multiple game profiles and mod setups easily.</div></div>
+      <div class="fcard reveal"><div class="ficon"><span class="ms">verified_user</span></div><div class="fname">Safe &amp; Open</div><div class="fdesc">Verified releases, open source, GPL-3.0 licensed.</div></div>
+    </div>
+  </section>
+
+  <!-- PREVIEW -->
+  <section id="preview" class="section">
+    <p class="eyebrow reveal">Screenshots</p>
+    <h2 class="stitle reveal">See it in action</h2>
+    <div class="prev-grid">
+      <div class="pcard reveal">
+        <img src="https://github.com/hollowlauncher/hollow-launcher/blob/main/Screenshot%202026-03-23%20211706.png?raw=true" alt="Home screen">
+        <div class="pcap">Hollow launcher</div>
+      </div>
+      <div class="pcard reveal">
+        <img src="https://raw.githubusercontent.com/hollowlauncher/hollow-launcher/refs/heads/main/Screenshot_2026-04-02-20-16-26-50_b5a3c1a091ca8858ad237dfa2ae30099.jpg" alt="Instance manager">
+        <div class="pcap">Hyper launcher</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section id="download" class="section">
+    <p class="eyebrow reveal">Get it free</p>
+    <h2 class="stitle reveal">Download</h2>
+    <div class="dlbox reveal">
+      <p>Always free &amp; open source.</p>
+      <p class="dlver">Beta 1.2</p>
+      <div class="dlrow">
+        <a href="https://github.com/hollowlauncher/hollow-launcher/releases/download/beta_1.2/HollowLauncher_1.0.0_x64-setup.exe"
+           class="btn btn-w" target="_blank">
+          <span class="ms">computer</span><span>Windows x64</span>
+        </a>
+        <a href="https://github.com/hollowlauncher/HyperLauncher/releases/download/Hyper_beta_1.0/hyper-launcher-full-release.1.apk"
+           class="btn btn-g" target="_blank">
+          <span class="ms">android</span><span>Android APK</span>
+        </a>
+        <a href="https://github.com/hollowlauncher/hollow-launcher"
+           class="btn btn-g" target="_blank">
+          <span class="ms" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24">code</span><span>Source</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Hollow Launcher &nbsp;·&nbsp; GPL-3.0</footer>
+</div>
+
+<script>
+  /* BG fade */
+  const bg = document.getElementById('bgImg');
+  window.addEventListener('scroll', () => {
+    bg.style.setProperty('--bg-op', Math.max(0, 0.13 - scrollY / 500 * 0.13));
+  }, { passive: true });
+
+  /* Reveal */
+  document.documentElement.classList.add('js-ready');
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 5) * 0.055 + 's';
+    io.observe(el);
+  });
+
+  /* Ripple + feedback */
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const r = this.getBoundingClientRect();
+      const sz = Math.max(r.width, r.height) * 2;
+      const s = document.createElement('span');
+      s.className = 'rpl';
+      s.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX - r.left - sz/2}px;top:${e.clientY - r.top - sz/2}px`;
+      this.appendChild(s);
+      setTimeout(() => s.remove(), 520);
+
+      const ic = this.querySelector('.ms'), lb = this.querySelector('span:not(.ms)');
+      if (!ic || !lb) return;
+      const oi = ic.textContent, ol = lb.textContent;
+      this.classList.add('loading');
+      ic.textContent = 'downloading'; lb.textContent = 'Starting…';
+      setTimeout(() => {
+        this.classList.replace('loading', 'done');
+        ic.textContent = 'check_circle'; lb.textContent = 'Done!';
+        setTimeout(() => {
+          this.classList.remove('done');
+          ic.textContent = oi; lb.textContent = ol;
+        }, 2000);
+      }, 1500);
+    });
+  });
+</script>
+</body>
+</html>
