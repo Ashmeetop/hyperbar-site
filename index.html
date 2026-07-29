@@ -429,12 +429,26 @@
     }
   }
 
-  /* BG fade + header scroll state */
+  /* BG fade + header scroll state (eased, rAF-throttled — avoids the abrupt/jumpy darkening) */
   const bg = document.getElementById('bgImg');
   const hdrWrap = document.getElementById('hdrWrap');
-  window.addEventListener('scroll', () => {
-    bg.style.setProperty('--bg-op', Math.max(0, 0.13 - scrollY / 500 * 0.13));
+  const BG_OP_MAX = 0.13;
+  const BG_FADE_DIST = 1400; // px of scroll over which the bg fully fades out
+  let bgTicking = false;
+
+  function updateBg() {
+    const t = Math.min(1, scrollY / BG_FADE_DIST);
+    const eased = 1 - Math.pow(1 - t, 2); // ease-out — gentle at first, no sudden drop
+    bg.style.setProperty('--bg-op', (BG_OP_MAX * (1 - eased)).toFixed(4));
     hdrWrap.classList.toggle('scrolled', scrollY > 8);
+    bgTicking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!bgTicking) {
+      requestAnimationFrame(updateBg);
+      bgTicking = true;
+    }
   }, { passive: true });
 
   /* Reveal */
