@@ -245,7 +245,7 @@
     .fcard:hover { border-color:var(--border-h); background:rgba(255,255,255,0.06); transform:translateY(-2px); }
     .ficon {
       width:36px; height:36px; background:rgba(255,255,255,0.06);
-      border-radius:9px; display:flex; align-items:center; justify-content:center;
+      border-radius:99px; display:flex; align-items:center; justify-content:center;
     }
     .ficon .ms { font-size:20px; color:var(--text); }
     .fname { font-size:13.5px; font-weight:700; letter-spacing:-0.02em; color:var(--text); }
@@ -322,7 +322,7 @@
     <a class="logo" href="#">
       <img src="https://play-lh.googleusercontent.com/5NuTaH0AxzKe7Agw8HQjEW7rHNKxYJAJLzcG2k5VqheyCgHxyc_cMN9WmQd6Vjfqb8Aa7cJX01PUbK12GTLKJuM=w240-h480-rw" alt="">
       <span class="logo-name">Hyper Launcher</span>
-      <span class="ver-badge">v2</span>
+      <span class="ver-badge" id="headerTag">v3</span>
     </a>
     <nav id="mainNav">
       <a href="#features" data-target="features">Features</a>
@@ -351,10 +351,9 @@
     <h1>Hyper Launcher</h1>
     <p class="hero-sub">Minimal, fast Minecraft launcher<br>for Vanilla &amp; Fabric.</p>
     <div class="hero-btns">
-      <a href="https://github.com/hollowlauncher/hollow-launcher/releases/download/beta_1.2/HollowLauncher_1.0.0_x64-setup.exe"
-         class="btn btn-w" target="_blank">
-        <span class="ms">computer</span>
-        <span>Windows</span>
+      <a id="heroDlBtn" href="#" class="btn btn-w">
+        <span class="ms">download</span>
+        <span id="heroDlLabel">Download APK</span>
       </a>
       <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
          class="btn btn-g" target="_blank">
@@ -400,17 +399,16 @@
     <h2 class="stitle reveal">Download</h2>
     <div class="dlbox reveal">
       <p>Always free &amp; open source.</p>
-      <p class="dlver">v2</p>
+      <p class="dlver" id="dlBoxTag">Fetching latest build...</p>
       <div class="dlrow">
-        <a href="https://github.com/hollowlauncher/hollow-launcher/releases/download/beta_1.2/HollowLauncher_1.0.0_x64-setup.exe"
-           class="btn btn-w" target="_blank">
-          <span class="ms">computer</span><span>Windows x64</span>
+        <a id="mainDlBtn" href="#" class="btn btn-w">
+          <span class="ms">android</span><span id="mainDlLabel">Latest Release (.apk)</span>
         </a>
         <a href="https://play.google.com/store/apps/details?id=net.ashmeet.hyperlauncher&hl=en_IN"
            class="btn btn-g" target="_blank">
           <span class="ms">storefront</span><span>Google Play</span>
         </a>
-        <a href="https://github.com/hollowlauncher/hollow-launcher"
+        <a href="https://github.com/hollowlauncher/Hyper_Launcher_v3"
            class="btn btn-g" target="_blank">
           <span class="ms" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24">code</span><span>Source</span>
         </a>
@@ -418,27 +416,64 @@
     </div>
   </section>
 
-  <footer>© 2026 Hyper Launcher v2 &nbsp;·&nbsp; GPL-3.0</footer>
+  <footer>© 2026 Hyper Launcher &nbsp;·&nbsp; GPL-3.0</footer>
 </div>
 
 <script>
-  /* Haptic feedback helper — short tap pulse where supported (Android Chrome/WebView) */
+  /* ── GitHub API Release Fetcher ── */
+  const REPO = 'hollowlauncher/Hyper_Launcher_v3';
+
+  async function fetchLatestRelease() {
+    const heroBtn = document.getElementById('heroDlBtn');
+    const heroLabel = document.getElementById('heroDlLabel');
+    const mainBtn = document.getElementById('mainDlBtn');
+    const mainLabel = document.getElementById('mainDlLabel');
+    const dlBoxTag = document.getElementById('dlBoxTag');
+    const headerTag = document.getElementById('headerTag');
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      const apkAsset = data.assets?.find(a => a.name.endsWith('.apk'));
+      const downloadUrl = apkAsset ? apkAsset.browser_download_url : data.html_url;
+
+      heroBtn.href = downloadUrl;
+      mainBtn.href = downloadUrl;
+      
+      const tagText = data.tag_name || 'Latest';
+      dlBoxTag.textContent = `${tagText} • ${apkAsset ? apkAsset.name : 'Latest Release'}`;
+      headerTag.textContent = tagText;
+      heroLabel.textContent = `Download ${tagText}`;
+      mainLabel.textContent = `Get APK (${tagText})`;
+    } catch (e) {
+      const fallbackUrl = `https://github.com/${REPO}/releases`;
+      heroBtn.href = fallbackUrl;
+      mainBtn.href = fallbackUrl;
+      dlBoxTag.textContent = 'GitHub Releases';
+      heroLabel.textContent = 'Download APK';
+      mainLabel.textContent = 'GitHub Releases';
+    }
+  }
+
+  /* Haptic feedback helper */
   function haptic(ms = 12) {
     if (navigator.vibrate) {
       try { navigator.vibrate(ms); } catch (e) {}
     }
   }
 
-  /* BG fade + header scroll state (eased, rAF-throttled — avoids the abrupt/jumpy darkening) */
+  /* BG fade + header scroll state */
   const bg = document.getElementById('bgImg');
   const hdrWrap = document.getElementById('hdrWrap');
   const BG_OP_MAX = 0.13;
-  const BG_FADE_DIST = 1400; // px of scroll over which the bg fully fades out
+  const BG_FADE_DIST = 1400;
   let bgTicking = false;
 
   function updateBg() {
     const t = Math.min(1, scrollY / BG_FADE_DIST);
-    const eased = 1 - Math.pow(1 - t, 2); // ease-out — gentle at first, no sudden drop
+    const eased = 1 - Math.pow(1 - t, 2);
     bg.style.setProperty('--bg-op', (BG_OP_MAX * (1 - eased)).toFixed(4));
     hdrWrap.classList.toggle('scrolled', scrollY > 8);
     bgTicking = false;
@@ -496,7 +531,7 @@
     el.addEventListener('click', () => haptic(10));
   });
 
-  /* ── Category-style nav: sliding underline, active state, scroll-spy ── */
+  /* ── Category-style nav ── */
   const navEl = document.getElementById('mainNav');
   const navLinks = Array.from(navEl.querySelectorAll('a[data-target]'));
   const indicator = document.getElementById('navIndicator');
@@ -510,7 +545,7 @@
     indicator.classList.add('ready');
     if (pulse) {
       indicator.classList.remove('pulse');
-      void indicator.offsetWidth; /* restart animation */
+      void indicator.offsetWidth;
       indicator.classList.add('pulse');
     }
   }
@@ -543,7 +578,10 @@
 
   sections.forEach(sec => { if (sec) spy.observe(sec); });
 
-  window.addEventListener('load', () => setActive(navLinks[0]));
+  window.addEventListener('load', () => {
+    setActive(navLinks[0]);
+    fetchLatestRelease();
+  });
   window.addEventListener('resize', () => {
     const active = navEl.querySelector('a.active') || navLinks[0];
     moveIndicator(active, false);
