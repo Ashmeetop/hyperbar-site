@@ -223,7 +223,7 @@
     .stitle {
       text-align:center; font-size:clamp(24px,5vw,36px);
       font-weight:800; letter-spacing:-0.03em;
-      color:var(--text); margin-bottom:34px;
+      color:var(--text); margin-bottom:44px;
     }
 
     /* ── FEATURES ── */
@@ -250,28 +250,47 @@
     .fname { font-size:13.5px; font-weight:700; letter-spacing:-0.02em; color:var(--text); }
     .fdesc { font-size:12px; color:var(--muted2); line-height:1.5; }
 
-    /* ── PREVIEW (3 Screens) ── */
-    .prev-grid {
-      display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;
+    /* ── PREVIEW (Alternating Rows Layout) ── */
+    .prev-list {
+      display:flex; flex-direction:column; gap:40px;
     }
-    @media (max-width:840px) { .prev-grid { grid-template-columns:1fr 1fr; } }
-    @media (max-width:560px) { .prev-grid { grid-template-columns:1fr; gap:12px; } }
 
-    .pcard {
-      border-radius:16px; overflow:hidden;
+    .prev-row {
+      display:flex; align-items:center; gap:36px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:20px; padding:28px;
+      transition:border-color .3s;
+    }
+    .prev-row:hover { border-color:var(--border-h); }
+
+    .prev-row.reverse { flex-direction:row-reverse; }
+
+    .prev-info {
+      flex:1; display:flex; flex-direction:column; gap:10px; text-align:left;
+    }
+    .prev-badge {
+      font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+      color:var(--muted2); background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:999px; width:fit-content;
+    }
+    .prev-title {
+      font-size:22px; font-weight:800; letter-spacing:-0.02em; color:#fff;
+    }
+    .prev-desc {
+      font-size:13.5px; color:var(--muted2); line-height:1.6; letter-spacing:-0.01em;
+    }
+
+    .prev-img-wrap {
+      flex:1.2; border-radius:14px; overflow:hidden;
       border:1px solid var(--border); background:#0a0a0a;
-      box-shadow:0 16px 48px rgba(0,0,0,.6);
-      transition: border-color .3s, transform .3s;
+      box-shadow:0 12px 36px rgba(0,0,0,.5);
     }
-    .pcard:hover { border-color:var(--border-h); transform:translateY(-3px); }
-    .pcard img { width:100%; display:block; aspect-ratio: 16 / 9; object-fit: cover; }
-    .pcap {
-      padding:12px 14px; font-size:12.5px; font-weight:600;
-      color:var(--text); letter-spacing:-0.01em;
-      border-top:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between;
+    .prev-img-wrap img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; transition:transform .4s ease; }
+    .prev-row:hover .prev-img-wrap img { transform:scale(1.02); }
+
+    @media (max-width:768px) {
+      .prev-row, .prev-row.reverse { flex-direction:column-reverse; gap:20px; padding:20px; text-align:center; }
+      .prev-info { align-items:center; }
     }
-    .pcap span { font-size:11px; font-weight:500; color:var(--muted2); }
 
     /* ── DOWNLOAD & OLD BUILDS ── */
     .dlbox {
@@ -302,12 +321,12 @@
       opacity: 0; margin-top: 0;
     }
     .old-builds-container.open {
-      max-height: 400px; opacity: 1; margin-top: 20px;
+      max-height: 450px; opacity: 1; margin-top: 20px;
     }
     .old-builds-list {
-      max-width: 500px; margin: 0 auto;
+      max-width: 520px; margin: 0 auto;
       background: rgba(0,0,0,0.4); border: 1px solid var(--border);
-      border-radius: 12px; overflow-y: auto; max-height: 320px;
+      border-radius: 14px; overflow-y: auto; max-height: 360px;
       display: flex; flex-direction: column; text-align: left;
     }
     .build-item {
@@ -320,7 +339,12 @@
     .build-item:hover { background: rgba(255,255,255,0.06); }
     .build-tag { font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
     .build-date { font-size: 11px; color: var(--muted2); }
-    .build-dl { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #38bdf8; }
+
+    /* White download button inside old builds */
+    .btn-build-dl {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -420,26 +444,48 @@
     </div>
   </section>
 
-  <!-- PREVIEW -->
+  <!-- PREVIEW (Alternating Row Layout) -->
   <section id="preview" class="section">
     <p class="eyebrow reveal">Screenshots</p>
     <h2 class="stitle reveal">See it in action</h2>
-    <div class="prev-grid">
-      <!-- HomeScreen -->
-      <div class="pcard reveal">
-        <img src="https://play-lh.googleusercontent.com/YoUP3e7Qg97FizgZUwjLwpsfn_E-Flo3k4kJP8_OR_iqURIyySXJYbbGSIHMULqbKiy4d_SwZpkZ1oM70_S4=w526-h296-rw" alt="Home Screen Preview">
-        <div class="pcap">Home Screen <span>Main Interface</span></div>
+    <div class="prev-list">
+      
+      <!-- Row 1: Summary Left, Image Right -->
+      <div class="prev-row reveal">
+        <div class="prev-info">
+          <span class="prev-badge">Dashboard</span>
+          <h3 class="prev-title">Home Screen</h3>
+          <p class="prev-desc">Clean, dark-themed dashboard designed for effortless launch experience. Access your recent instances and quickly launch into your game.</p>
+        </div>
+        <div class="prev-img-wrap">
+          <img src="https://play-lh.googleusercontent.com/YoUP3e7Qg97FizgZUwjLwpsfn_E-Flo3k4kJP8_OR_iqURIyySXJYbbGSIHMULqbKiy4d_SwZpkZ1oM70_S4=w526-h296-rw" alt="Home Screen Preview">
+        </div>
       </div>
-      <!-- ContentInstaller -->
-      <div class="pcard reveal">
-        <img src="https://play-lh.googleusercontent.com/9ZcTteEo5PYmoo6QumtX_Z2N5p-thqXu8HXT5CUzT61nkTCpp8I89HJrQBsMMB8rAwmclpOAL5iieoBWEu7Q=w526-h296-rw" alt="Content Installer Preview">
-        <div class="pcap">Content Installer <span>Mods &amp; Mods Loader</span></div>
+
+      <!-- Row 2: Image Left, Summary Right -->
+      <div class="prev-row reverse reveal">
+        <div class="prev-info">
+          <span class="prev-badge">Management</span>
+          <h3 class="prev-title">Content Installer</h3>
+          <p class="prev-desc">Search, download, and manage your Fabric mods, shader packs, and resource packs directly inside the launcher with one tap.</p>
+        </div>
+        <div class="prev-img-wrap">
+          <img src="https://play-lh.googleusercontent.com/9ZcTteEo5PYmoo6QumtX_Z2N5p-thqXu8HXT5CUzT61nkTCpp8I89HJrQBsMMB8rAwmclpOAL5iieoBWEu7Q=w526-h296-rw" alt="Content Installer Preview">
+        </div>
       </div>
-      <!-- InstanceManager -->
-      <div class="pcard reveal">
-        <img src="https://play-lh.googleusercontent.com/wrK02K6T6vZ7u0jmO_eqtAznaltU-0b-TKf48S-PENErEK5NraJo4bSWcLqStk1MJFL7jGJvYcf9D8rO1iA2tA=w526-h296-rw" alt="Instance Manager Preview">
-        <div class="pcap">Instance Manager <span>Profiles &amp; Settings</span></div>
+
+      <!-- Row 3: Summary Left, Image Right -->
+      <div class="prev-row reveal">
+        <div class="prev-info">
+          <span class="prev-badge">Profiles</span>
+          <h3 class="prev-title">Instance Manager</h3>
+          <p class="prev-desc">Create custom game profiles, switch between Minecraft versions, and fine-tune JVM arguments and performance settings with ease.</p>
+        </div>
+        <div class="prev-img-wrap">
+          <img src="https://play-lh.googleusercontent.com/wrK02K6T6vZ7u0jmO_eqtAznaltU-0b-TKf48S-PENErEK5NraJo4bSWcLqStk1MJFL7jGJvYcf9D8rO1iA2tA=w526-h296-rw" alt="Instance Manager Preview">
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -525,19 +571,20 @@
             year: 'numeric', month: 'short', day: 'numeric'
           });
 
-          const item = document.createElement('a');
+          const item = document.createElement('div');
           item.className = 'build-item';
-          item.href = url;
-          item.target = '_blank';
           item.innerHTML = `
             <div>
-              <div class="build-tag"><span class="ms" style="font-size:14px;color:var(--muted2)">sell</span> ${rel.tag_name} ${rel.prerelease ? '<span style="font-size:9px;background:#ef4444;color:#fff;padding:1px 5px;border-radius:4px;">Pre</span>' : ''}</div>
+              <div class="build-tag">
+                <span class="ms" style="font-size:14px;color:var(--muted2)">sell</span> 
+                ${rel.tag_name} ${rel.prerelease ? '<span style="font-size:9px;background:#ef4444;color:#fff;padding:1px 5px;border-radius:4px;">Pre</span>' : ''}
+              </div>
               <div class="build-date">${pubDate}</div>
             </div>
-            <div class="build-dl">
+            <a href="${url}" class="btn btn-w btn-build-dl" target="_blank">
+              <span class="ms">download</span>
               <span>Download</span>
-              <span class="ms" style="font-size:16px">download</span>
-            </div>
+            </a>
           `;
           oldBuildsList.appendChild(item);
         });
@@ -549,7 +596,14 @@
       dlBoxTag.textContent = 'GitHub Releases';
       heroLabel.textContent = 'Download APK';
       mainLabel.textContent = 'GitHub Releases';
-      oldBuildsList.innerHTML = `<a href="${fallbackUrl}" target="_blank" class="build-item"><div class="build-tag">View All Releases on GitHub</div><div class="build-dl"><span class="ms">open_in_new</span></div></a>`;
+      oldBuildsList.innerHTML = `
+        <div class="build-item">
+          <div class="build-tag">View Releases on GitHub</div>
+          <a href="${fallbackUrl}" target="_blank" class="btn btn-w btn-build-dl">
+            <span class="ms">open_in_new</span>
+            <span>Releases</span>
+          </a>
+        </div>`;
     }
   }
 
